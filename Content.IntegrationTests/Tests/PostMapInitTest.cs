@@ -56,8 +56,6 @@ namespace Content.IntegrationTests.Tests
         /// </remarks>
         private static readonly Dictionary<string, HashSet<EntProtoId>> DoNotMapWhitelistSpecific = new()
         {
-            {"/Maps/bagel.yml", ["RubberStampMime"]},
-            {"/Maps/reach.yml", ["HandheldCrewMonitor"]},
             {"/Maps/Shuttles/ShuttleEvent/honki.yml", ["GoldenBikeHorn", "RubberStampClown"]},
             {"/Maps/Shuttles/ShuttleEvent/syndie_evacpod.yml", ["RubberStampSyndicate"]},
             {"/Maps/Shuttles/ShuttleEvent/cruiser.yml", ["ShuttleGunPerforator"]},
@@ -74,24 +72,13 @@ namespace Content.IntegrationTests.Tests
         private static readonly string[] DoNotMapWhitelist =
         {
             "/Maps/centcomm.yml",
-            "/Maps/bagel.yml", // Contains mime's rubber stamp --> Either fix this, remove the category, or remove this comment if intentional.
-            "/Maps/meta.yml", // Contains warden's rubber stamp
-            "/Maps/reach.yml", // Contains handheld crew monitor
             "/Maps/Shuttles/ShuttleEvent/cruiser.yml", // Contains LSE-1200c "Perforator"
             "/Maps/Shuttles/ShuttleEvent/honki.yml", // Contains golden honker, clown's rubber stamp
             "/Maps/Shuttles/ShuttleEvent/instigator.yml", // Contains EXP-320g "Friendship"
             "/Maps/Shuttles/ShuttleEvent/syndie_evacpod.yml", // Contains syndicate rubber stamp
             // Goobstation maps/map versions; it's kinda a big TODO rn
-            "/Maps/_Goobstation/bagel.yml",
-            "/Maps/_Goobstation/barratry.yml",
-            "/Maps/_Goobstation/cluster.yml",
-            "/Maps/_Goobstation/amber.yml",
-            "/Maps/_Goobstation/kettle.yml",
-            "/Maps/_Goobstation/lambda.yml",
-            "/Maps/_Goobstation/leonid.yml",
             "/Maps/_Goobstation/Nonstations/wizden.yml", // Obviously
             "/Maps/_Lavaland/Lavaland/ruin_toyshop.yml", // I think we might want to glob these, idk
-            "/Maps/_Goobstation/loop.yml",
             "/Maps/_Goobstation/Shuttles/consul.yml", // Contains HEINOUS amounts of centcomm contraband. Obviously.
             "/Maps/_Goobstation/Shuttles/retort_assault.yml", // ERT ships
             "/Maps/_Goobstation/Shuttles/retort_medical.yml",
@@ -109,115 +96,17 @@ namespace Content.IntegrationTests.Tests
 
         private static readonly string[] GameMaps =
         {
-            // Goobstation edit:
-            // order this list alphabetically, mark dev maps
-            // if upstreaming take ours here and edit manually.
-            //"Amber", kill
-            "Atlas",
-            "Bagel",
-            "Barratry",
-            "Box",            // Not in pool
             "CentComm",       // CentComm
-            "Chloris",
-            "Cluster",
-            "Cog",
-            "Core",           // Not in pool.
-            "Delta",
             "Dev",            // Dev map
             "dm01-entryway",  // Deathmatch
-            "Europa",         // Not in pool.
-            "Exo",          // okay fine fuck it.
-            "Fland",
-            "FlandHighPop",
-            "Kettle",
-            "Lambda",         // Not in pool
             "Lavatest",       // Dev map
-            "Leonid",
-            "Loop",
-            "Marathon",
-            "Meta",
             "MeteorArena",    // Deathmatch
-            "Oasis",
-            "OasisHighPop",
-            "Omega",
-            "Origin",
-            "OriginHighPop",  // Not in pool
-            "Packed",
-            "Reach",
-            "Saltern",
-            "Serpentcrest",
-            "Snowball",
             "TestTeg",        // Dev map
-            "Train",           // Not in pool
-            // Goob end
-
-            // Corvax-Goob-Maps-start
-            "CorvaxAstra",
-            "CorvaxBox",
-            "CorvaxDelta",
-            "CorvaxGlacier",
-            "CorvaxPilgrim",
-            "CorvaxAmber",
-            "CorvaxBagel",
-            "CorvaxMarathon",
-            "CorvaxMascara",
-            "CorvaxOutpost",
-            "CorvaxPaper",
-            "CorvaxPearl",
-            "CorvaxVoid",
-            "CorvaxMaus",
-            "CorvaxOmega",
-            "CorvaxPacked",
-            "CorvaxTushkan",
-            "CorvaxAvrite",
-            "CorvaxChloris",
-            "CorvaxSilly",
-            "CorvaxCluster",
-            "CorvaxAvrite",
-            "CorvaxAwesome"
-            // Corvax-Goob-Maps-end
         };
         // Goobstation edit start, yeah i know, but this is easier and less load than loading protoman or something.
         private static readonly string[] GameMapsInCurrentPool = // plus dev
         {
-            // order this list alphabetically, mark dev maps
-              //"Amber", kill
-              "Atlas",
-              "Bagel",
-             //  "Barratry", kill memory concerns
-            //"Box",            // Not in pool
-              "CentComm",      // CentComm
-              "Chloris",
-              "Cluster",
-              "Cog",
-            //"Core",           // Not in pool.
-              "Delta",
-              "Dev",            // Dev map
-            //"dm01-entryway",  // Deathmatch
-            //"Europa",         // Not in pool.
-              "Exo",
-            //  "Fland",        // kill due to mem
-              "FlandHighPop",
-              "Kettle",
-            //"Lambda",         // Not in pool
-              "Lavatest",       //Dev map
-              "Leonid",
-              "Loop",
-              "Marathon",
-              "Meta",
-            //"MeteorArena",    // Deathmatch
-            //  "Oasis",        // kill due to memory
-              "OasisHighPop",
-              "Omega",
-              "Origin",
-            //"OriginHighPop",  //Not in pool
-              "TestTeg",        //Dev map
-            //"Train",          //Not in pool
-              "Packed",
-              "Reach",
-              "Saltern",
-              "Serpentcrest",
-             // "Snowball", // fuck off not in pool
+            "Dev",            // Dev map
         };
         // Goobstation edit end
 
