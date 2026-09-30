@@ -2,6 +2,8 @@
 
 using Content.Goobstation.Shared.Parallax; // Goob - background meteors
 using Robust.Shared.Prototypes;
+using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype.Array;
+using Robust.Shared.Utility;
 
 namespace Content.Client.Parallax.Data;
 
@@ -9,8 +11,17 @@ namespace Content.Client.Parallax.Data;
 /// Prototype data for a parallax.
 /// </summary>
 [Prototype]
-public sealed partial class ParallaxPrototype : IPrototype
+public sealed partial class ParallaxPrototype : IPrototype, IInheritingPrototype
 {
+    /// <inheritdoc/>
+    [ParentDataField(typeof(AbstractPrototypeIdArraySerializer<ParallaxPrototype>))]
+    public string[]? Parents { get; private set; }
+
+    /// <inheritdoc/>
+    [NeverPushInheritance]
+    [AbstractDataField]
+    public bool Abstract { get; private set; }
+
     /// <inheritdoc/>
     [IdDataField]
     public string ID { get; private set; } = default!;

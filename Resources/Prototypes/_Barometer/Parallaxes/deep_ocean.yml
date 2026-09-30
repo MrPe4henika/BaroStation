@@ -1,0 +1,128 @@
+# SPDX-License-Identifier: MIT
+
+- type: parallax
+  id: DeepOcean
+  layers:
+    # --- The water column -------------------------------------------------
+    # Not tiled and anchored to the camera: this is the backstop. It carries
+    # the depth gradient and the vignette, so everything above it inherits a
+    # consistent sense of "dark, and darker below".
+    - texture:
+        !type:ImageParallaxTextureSource
+        path: "/Textures/_Barometer/Parallaxes/deep_ocean_base.png"
+      slowness: 1.0
+      scale: "1, 1"
+      tiled: false
+      shader: DeepOceanBase
+
+    # --- Distance ---------------------------------------------------------
+    # Structures the water has almost entirely swallowed. Barely legible on
+    # purpose; they stop the far field from being an empty gradient.
+    - texture:
+        !type:ImageParallaxTextureSource
+        path: "/Textures/_Barometer/Parallaxes/deep_ocean_ruins.png"
+      slowness: 0.998046875
+      scale: "1.6, 1.6"
+      scrolling: "-0.004, 0.0015"
+
+    # Broad, slow turbidity. Nearly anchored to the world - at this distance
+    # the camera barely moves it, which is what sells the scale.
+    - texture:
+        !type:ImageParallaxTextureSource
+        path: "/Textures/_Barometer/Parallaxes/deep_ocean_murk_far.png"
+      slowness: 0.997
+      scale: "1.4, 1.4"
+      scrolling: "0.006, 0.0025"
+      shader: DeepOceanMurk
+
+    # Whatever light is left, falling from an unreachable distance.
+    - texture:
+        !type:ImageParallaxTextureSource
+        path: "/Textures/_Barometer/Parallaxes/deep_ocean_shafts.png"
+      slowness: 0.998046875
+      scale: "1.8, 1.8"
+      scrolling: "-0.002, 0.004"
+      shader: DeepOceanShafts
+
+    # --- Mid distance -----------------------------------------------------
+    # Tighter sediment cloud, moving against the far layer so the two shear
+    # against each other instead of sliding as one sheet.
+    - texture:
+        !type:ImageParallaxTextureSource
+        path: "/Textures/_Barometer/Parallaxes/deep_ocean_murk_near.png"
+      slowness: 0.994
+      scale: "0.9, 0.9"
+      scrolling: "-0.011, 0.006"
+      shader: DeepOceanMurkNear
+
+    # Fine marine snow, distant. Falls slowly, barely twinkles.
+    - texture:
+        !type:ImageParallaxTextureSource
+        path: "/Textures/_Barometer/Parallaxes/deep_ocean_snow_far.png"
+      slowness: 0.99
+      scale: "0.8, 0.8"
+      scrolling: "0.008, -0.020"
+      shader: DeepOceanSnow
+
+    # Small bubbles on the way up from the station.
+    - texture:
+        !type:ImageParallaxTextureSource
+        path: "/Textures/_Barometer/Parallaxes/deep_ocean_bubbles_far.png"
+      slowness: 0.987
+      scale: "0.75, 0.75"
+      scrolling: "0.004, 0.075"
+      shader: DeepOceanBubbles
+
+    # --- Near distance ----------------------------------------------------
+    # Coarser, brighter particulate right in front of the station.
+    - texture:
+        !type:ImageParallaxTextureSource
+        path: "/Textures/_Barometer/Parallaxes/deep_ocean_snow_near.png"
+      slowness: 0.978
+      scale: "0.55, 0.55"
+      scrolling: "0.016, -0.055"
+      shader: DeepOceanSnowNear
+
+    # Larger bubbles passing close to the camera.
+    - texture:
+        !type:ImageParallaxTextureSource
+        path: "/Textures/_Barometer/Parallaxes/deep_ocean_bubbles_near.png"
+      slowness: 0.968
+      scale: "0.45, 0.45"
+      scrolling: "0.010, 0.150"
+      shader: DeepOceanBubblesNear
+
+    # --- Foreground -------------------------------------------------------
+    # The closest layer. Gives the scene weight and pushes the background back.
+    - texture:
+        !type:ImageParallaxTextureSource
+        path: "/Textures/_Barometer/Parallaxes/deep_ocean_haze.png"
+      slowness: 0.94
+      scale: "0.7, 0.7"
+      scrolling: "0.030, 0.008"
+      shader: DeepOceanHaze
+
+  # Low quality: the base plus the two layers that carry the composition.
+  # Everything here is cheap to sample and none of it needs the shader stack
+  # to be legible.
+  layersLQ:
+    - texture:
+        !type:ImageParallaxTextureSource
+        path: "/Textures/_Barometer/Parallaxes/deep_ocean_base.png"
+      slowness: 1.0
+      scale: "1, 1"
+      tiled: false
+      shader: DeepOceanBase
+    - texture:
+        !type:ImageParallaxTextureSource
+        path: "/Textures/_Barometer/Parallaxes/deep_ocean_murk_far.png"
+      slowness: 0.997
+      scale: "1.4, 1.4"
+      scrolling: "0.006, 0.0025"
+    - texture:
+        !type:ImageParallaxTextureSource
+        path: "/Textures/_Barometer/Parallaxes/deep_ocean_murk_near.png"
+      slowness: 0.994
+      scale: "0.9, 0.9"
+      scrolling: "-0.011, 0.006"
+  layersLQUseHQ: false

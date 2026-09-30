@@ -1,0 +1,39 @@
+// SPDX-License-Identifier: MIT
+
+// Residual downwelling light for the DeepOcean parallax.
+//
+// At this depth there is no sunlight left, so this is not a light shaft in the
+// usual sense — it is what survives: an extremely faint suggestion of a lit
+// surface a very long way up, smeared by the water in between.
+//
+// Because the water between surface and station scatters so heavily, the real
+// behaviour to imitate is that the shafts barely move and barely change. The
+// animation here is therefore almost imperceptible by design; pushing it
+// further would immediately read as "sunlight", which is wrong for a station
+// this deep.
+
+light_mode unshaded;
+
+uniform highp float shimmerAmount;
+uniform highp float shimmerSpeed;
+uniform highp float shimmerScale;
+uniform highp float falloffPower;
+
+void fragment()
+{
+    highp float t = TIME * shimmerSpeed;
+
+    // Slow modulation of the column intensity. Whole-cycle in UV.x keeps the
+    // tile seam clean.
+    highp float sway = sin(UV.x * 6.2831853 * shimmerScale + t) * 0.5
+                     + sin(UV.x * 6.2831853 * shimmerScale * 1.7 - t * 0.63) * 0.5;
+
+    highp vec4 color = zTexture(UV);
+
+    // Shafts fade out with depth, and the shader steepens that falloff so the
+    // light never reaches the bottom of the tile.
+    color.a *= mix(1.0 - shimmerAmount, 1.0 + shimmerAmount, sway * 0.5 + 0.5);
+    color.a *= pow(1.0 - UV.y, falloffPower);
+
+    COLOR = color;
+}

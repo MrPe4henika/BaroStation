@@ -1,0 +1,65 @@
+// SPDX-License-Identifier: MIT
+
+// Rising bubbles for the DeepOcean parallax.
+//
+// A bubble is not a rigid object: it wobbles as it rises, it tumbles, and the
+// bright meniscus sweeps around the silhouette as its orientation changes. All
+// three are cheap here and all three are what stop a bubble sprite from
+// reading as a decal pasted on the background.
+//
+//   * Lateral wobble: a slow lateral oscillation, expressed as a whole-cycle
+//     sine in UV.y so the horizontal displacement is zero at the tile seam.
+//   * Tumble: rotates the sample around the tile centre. This shears the
+//     whole field rather than individual bubbles, which is enough to make the
+//     layer feel alive at this scale without needing per-bubble sprites.
+//   * Shimmer: a hashed, per-texel brightness modulation so the rims breathe.
+//
+// The rise is done by the layer's `scrolling` Y value, which keeps the motion
+// consistent with the rest of the parallax stack.
+
+light_mode unshaded;
+
+uniform highp float wobbleAmount;
+uniform highp float wobbleSpeed;
+uniform highp float wobbleFrequency;
+uniform highp float tumbleAmount;
+uniform highp float tumbleSpeed;
+uniform highp float shimmerAmount;
+uniform highp float shimmerSpeed;
+uniform highp float shimmerFrequency;
+
+highp float ocHash(highp vec2 p)
+{
+    return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+}
+
+void fragment()
+{
+    highp float t = TIME;
+
+    // Wobble. Displacement vanishes at the tile seam so tiles stay aligned.
+    highp float wobble = sin(UV.y * wobbleFrequency * 6.2831853 + t * wobbleSpeed);
+    highp vec2 uv = vec2(UV.x + wobble * wobbleAmount, UV.y);
+
+    // Tumble: a small rotation about the centre of the tile.
+    highp vec2 centred = uv - vec2(0.5);
+    highp float ang = sin(t * tumbleSpeed) * tumbleAmount;
+    highp float ca = cos(ang);
+    highp float sa = sin(ang);
+    uv = vec2(centred.x * ca - centred.y * sa, centred.x * sa + centred.y * ca) + vec2(0.5);
+
+    highp vec4 color = zTexture(uv);
+
+    // Shimmer on the meniscus only.
+    if (color.a > 0.001)
+    {
+        highp vec2 cell = floor(uv * shimmerFrequency);
+        highp float h = ocHash(cell);
+        highp float phase = h * 6.2831853;
+        highp float speed = shimmerSpeed * (0.4 + 1.2 * h);
+        highp float shimmer = pow(0.5 + 0.5 * sin(t * speed + phase), 4.0);
+        color.rgb *= mix(1.0 - shimmerAmount, 1.0 + shimmerAmount, shimmer);
+    }
+
+    COLOR = color;
+}

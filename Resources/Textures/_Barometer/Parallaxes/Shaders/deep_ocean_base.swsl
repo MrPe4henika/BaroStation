@@ -1,0 +1,57 @@
+// SPDX-License-Identifier: MIT
+
+// Base water column for the DeepOcean parallax.
+//
+// This is the one layer that is never tiled: it is drawn once, anchored to the
+// camera, and everything else is composited on top of it. That makes it the
+// right place to do the work that has to stay smooth in screen space:
+//
+//   * a slow vertical light gradient (the water gets darker with depth)
+//   * a radial vignette, so the middle of the screen stays legible
+//   * very low-frequency turbidity that keeps the gradient from banding
+//
+// The turbidity is deliberately animated in UV space rather than with noise
+// functions, because UV is continuous across the single quad while gl_FragCoord
+// would be tied to the window size and change with zoom.
+
+light_mode unshaded;
+
+uniform highp float depthDarkness;   // how much the lower screen falls off
+uniform highp float vignetteStrength; // radial darkening towards the corners
+uniform highp float turbidityAmount; // amplitude of the slow density drift
+uniform highp float turbiditySpeed;
+uniform highp float turbidityScale;
+
+void fragment()
+{
+    highp vec4 color = zTexture(UV);
+
+    // Depth gradient. 0 at the bottom of the screen, 1 at the top.
+    highp float depth = UV.y;
+
+    // Radial vignette in quad space, aspect-corrected so it stays circular
+    // regardless of the layer's aspect ratio.
+    highp vec2 centred = (UV - vec2(0.5)) * vec2(1.0, 1.0);
+    highp float radius = length(centred) * 1.41421356;
+
+    // Slow, very large-scale turbidity. Two drifting sines per axis read as
+    // suspended sediment moving with a slow current, and cost nothing.
+    highp float t = TIME * turbiditySpeed;
+    highp vec2 drift = UV * turbidityScale + vec2(t, t * 0.63);
+    highp float turb =
+        sin(drift.x + sin(drift.y * 0.77) * 1.3) * 0.5 +
+        sin(drift.y * 1.31 - sin(drift.x * 0.61) * 1.1) * 0.5;
+    // Push towards billows rather than an even wash.
+    turb = turb * 0.5 + 0.5;
+
+    // Combine: turbidity modulates brightness, depth darkens downwards,
+    // the vignette pulls the corners in.
+    highp float brightness = 1.0;
+    brightness *= 1.0 - depthDarkness * (1.0 - depth);
+    brightness *= mix(1.0 - turbidityAmount, 1.0 + turbidityAmount, turb);
+    brightness *= 1.0 - vignetteStrength * smoothstep(0.35, 1.0, radius);
+
+    color.rgb *= brightness;
+
+    COLOR = color;
+}

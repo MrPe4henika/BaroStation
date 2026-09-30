@@ -1,0 +1,106 @@
+# SPDX-License-Identifier: MIT
+
+- type: shader
+  id: DeepOceanBase
+  kind: source
+  path: "/Textures/_Barometer/Parallaxes/Shaders/deep_ocean_base.swsl"
+  params:
+    depthDarkness: 0.42
+    vignetteStrength: 0.55
+    turbidityAmount: 0.10
+    turbiditySpeed: 0.045
+    turbidityScale: 2.4
+
+- type: shader
+  id: DeepOceanMurk
+  kind: source
+  path: "/Textures/_Barometer/Parallaxes/Shaders/deep_ocean_murk.swsl"
+  params:
+    warpAmount: 0.012
+    warpScale: 1.5
+    warpSpeed: 0.06
+    driftPhase: 0.0
+    tintAmount: 0.35
+
+- type: shader
+  id: DeepOceanMurkNear
+  kind: source
+  path: "/Textures/_Barometer/Parallaxes/Shaders/deep_ocean_murk.swsl"
+  params:
+    warpAmount: 0.020
+    warpScale: 2.6
+    warpSpeed: 0.085
+    driftPhase: 2.4
+    tintAmount: 0.45
+
+- type: shader
+  id: DeepOceanSnow
+  kind: source
+  path: "/Textures/_Barometer/Parallaxes/Shaders/deep_ocean_snow.swsl"
+  params:
+    swayAmount: 0.0035
+    swaySpeed: 0.55
+    swayFrequency: 3.0
+    twinkleAmount: 0.45
+    twinkleSpeed: 1.6
+    twinkleFrequency: 220.0
+
+- type: shader
+  id: DeepOceanSnowNear
+  kind: source
+  path: "/Textures/_Barometer/Parallaxes/Shaders/deep_ocean_snow.swsl"
+  params:
+    swayAmount: 0.008
+    swaySpeed: 0.8
+    swayFrequency: 2.0
+    twinkleAmount: 0.6
+    twinkleSpeed: 2.2
+    twinkleFrequency: 140.0
+
+- type: shader
+  id: DeepOceanBubbles
+  kind: source
+  path: "/Textures/_Barometer/Parallaxes/Shaders/deep_ocean_bubbles.swsl"
+  params:
+    wobbleAmount: 0.006
+    wobbleSpeed: 1.1
+    wobbleFrequency: 2.0
+    tumbleAmount: 0.010
+    tumbleSpeed: 0.09
+    shimmerAmount: 0.5
+    shimmerSpeed: 2.4
+    shimmerFrequency: 170.0
+
+- type: shader
+  id: DeepOceanBubblesNear
+  kind: source
+  path: "/Textures/_Barometer/Parallaxes/Shaders/deep_ocean_bubbles.swsl"
+  params:
+    wobbleAmount: 0.014
+    wobbleSpeed: 1.5
+    wobbleFrequency: 1.0
+    tumbleAmount: 0.018
+    tumbleSpeed: 0.13
+    shimmerAmount: 0.65
+    shimmerSpeed: 3.1
+    shimmerFrequency: 110.0
+
+- type: shader
+  id: DeepOceanShafts
+  kind: source
+  path: "/Textures/_Barometer/Parallaxes/Shaders/deep_ocean_shafts.swsl"
+  params:
+    shimmerAmount: 0.25
+    shimmerSpeed: 0.10
+    shimmerScale: 1.0
+    falloffPower: 1.6
+
+- type: shader
+  id: DeepOceanHaze
+  kind: source
+  path: "/Textures/_Barometer/Parallaxes/Shaders/deep_ocean_haze.swsl"
+  params:
+    breathAmount: 0.006
+    breathSpeed: 0.07
+    breathScale: 1.0
+    absorbAmount: 0.25

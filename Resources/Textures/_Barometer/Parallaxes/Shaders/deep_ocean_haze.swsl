@@ -1,0 +1,35 @@
+// SPDX-License-Identifier: MIT
+
+// Near-camera water haze for the DeepOcean parallax.
+//
+// The closest parallax layer. Its job is to sit between the station and the
+// background and add a little weight in front of everything, so the eye reads
+// the scene as "looking through water" rather than "looking at a picture".
+//
+// It also does a slow lateral breath, which is what makes a flat haze layer
+// feel like a volume of moving fluid instead of a scrim.
+
+light_mode unshaded;
+
+uniform highp float breathAmount;
+uniform highp float breathSpeed;
+uniform highp float breathScale;
+uniform highp float absorbAmount;
+
+void fragment()
+{
+    highp float t = TIME * breathSpeed;
+
+    // Whole-cycle sine field: periodic over UV 0..1, so tiling stays seamless.
+    highp vec2 uv = UV;
+    uv.x += sin(uv.y * 6.2831853 + t) * breathAmount;
+    uv.y += sin(uv.x * 6.2831853 * 0.5 - t * 0.7) * breathAmount * 0.6;
+
+    highp vec4 color = zTexture(uv);
+
+    // Slow global density change, so the haze thickens and thins over time.
+    highp float breath = 0.5 + 0.5 * sin(t * 0.37);
+    color.a *= mix(1.0 - absorbAmount, 1.0 + absorbAmount, breath);
+
+    COLOR = color;
+}

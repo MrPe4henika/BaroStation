@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: MIT
+
+# DeepOcean parallax layer: suspended sediment haze.
+#
+# `filter: true` is required: the layer is stretched to fit the viewport, so
+# nearest-neighbour sampling would make the murk visibly blocky.
+#
+# `wrap: repeat` is required: the DeepOceanMurk shader domain-warps UV to make
+# the billows shear against each other, and a clamped edge would smear the
+# outermost row of pixels across the tile.
+sample:
+  filter: true
+  wrap: repeat
+
+# Parallax layers are only needed once the player is in the game, and these are
+# large. Preloading them would slow every launch for nothing.
+preload: false

@@ -1,0 +1,52 @@
+// SPDX-License-Identifier: MIT
+
+// Suspended-sediment haze for the DeepOcean parallax.
+//
+// A parallax layer is drawn as a grid of repeated quads and every quad gets
+// UV 0..1, so anything computed from UV has to be periodic over that range or
+// the tile borders show up as seams. All the frequencies below are therefore
+// whole numbers of cycles per tile, and the domain warp is built out of sines
+// rather than hash noise for the same reason.
+//
+// The warp is what sells it: without it the murk slides across the screen as a
+// rigid sheet, which is the giveaway that a background is just a texture being
+// panned. With it the billows stretch, shear and reform.
+
+light_mode unshaded;
+
+uniform highp float warpAmount;    // how far the sample point is displaced
+uniform highp float warpScale;    // spatial frequency of the warp
+uniform highp float warpSpeed;    // how fast the warp itself evolves
+uniform highp float driftPhase;   // per-layer offset so layers don't sync up
+uniform highp float tintAmount;   // blend towards the murk's own colour
+
+// Sum of whole-cycle sines: exactly periodic over UV 0..1, so tiling is seamless.
+highp float ocWave(highp vec2 uv, highp float freq, highp float phase)
+{
+    highp float a = sin(uv.x * freq * 6.2831853 + phase);
+    highp float b = sin(uv.y * (freq * 0.5) * 6.2831853 - phase * 0.7);
+    highp float c = sin((uv.x * 0.5 + uv.y * 0.5) * freq * 6.2831853 + phase * 1.3);
+    return (a + b + c) / 3.0;
+}
+
+void fragment()
+{
+    highp float t = TIME * warpSpeed + driftPhase;
+
+    // Domain warp. Two decorrelated wave fields give a 2D displacement.
+    highp vec2 base = UV * warpScale;
+    highp float wx = ocWave(base, 1.0, t);
+    highp float wy = ocWave(base + vec2(0.37, 0.71), 1.0, -t * 0.83);
+
+    highp vec2 uv = UV + vec2(wx, wy) * warpAmount;
+
+    highp vec4 color = zTexture(uv);
+
+    // Warping changes how much murk sits under each pixel, so use the warp
+    // value to modulate density as well. This is what gives the haze depth
+    // instead of looking like a flat translucent sheet.
+    highp float density = 0.5 + 0.5 * (wx * 0.6 + wy * 0.4);
+    color.a *= mix(1.0 - tintAmount, 1.0 + tintAmount, density);
+
+    COLOR = color;
+}

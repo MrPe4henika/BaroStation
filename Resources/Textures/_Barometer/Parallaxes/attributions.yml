@@ -1,0 +1,30 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# SPDX-FileCopyrightText: 2026 Barometer contributors
+#
+# All DeepOcean parallax textures were generated procedurally from noise fields
+# and particle stamping - no third-party source assets.
+
+- files:
+    - "deep_ocean_base.png"
+    - "deep_ocean_bubbles_far.png"
+    - "deep_ocean_bubbles_near.png"
+    - "deep_ocean_haze.png"
+    - "deep_ocean_murk_far.png"
+    - "deep_ocean_murk_near.png"
+    - "deep_ocean_ruins.png"
+    - "deep_ocean_shafts.png"
+    - "deep_ocean_snow_far.png"
+    - "deep_ocean_snow_near.png"
+  license: "CC0-1.0"
+  copyright: "Generated procedurally for Barometer"
+
+- files:
+    - "Shaders/deep_ocean_base.swsl"
+    - "Shaders/deep_ocean_bubbles.swsl"
+    - "Shaders/deep_ocean_haze.swsl"
+    - "Shaders/deep_ocean_murk.swsl"
+    - "Shaders/deep_ocean_shafts.swsl"
+    - "Shaders/deep_ocean_snow.swsl"
+  license: "AGPL-3.0-or-later"
+  copyright: "Written for Barometer"

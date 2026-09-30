@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: MIT
+
+# DeepOcean parallax layer: the non-tiled water column backstop.
+#
+# `filter: true` because this layer is stretched across the viewport.
+# `wrap: repeat` is set for consistency with the tiled layers even though this
+# one never tiles: the shader's turbidity term samples outside 0..1 under
+# extreme zoom, and clamping would show up as a hard edge.
+sample:
+  filter: true
+  wrap: repeat
+
+preload: false

@@ -1,0 +1,57 @@
+// SPDX-License-Identifier: MIT
+
+// Marine snow: the constant drift of dead plankton and detritus that falls
+// through water at depth. Visually it's the layer that most reads as "water"
+// rather than "gradient", so it gets the most motion.
+//
+// Two effects on top of the sampled texture:
+//
+//   1. Horizontal sway. Real particulate doesn't fall in straight lines; it
+//      wanders as it sinks. Modulated by a whole-cycle sine in UV.y so the
+//      displacement is zero at the tile seam.
+//   2. Twinkle. Particles catch the faint downwelling light unevenly as they
+//      rotate. Hashed per texel cell, so it uses zNoise and is independent of
+//      the tiling requirement.
+//
+// The fall itself is handled by the parallax layer's `scrolling` value, not
+// here — doing it in the shader would make the motion independent of zoom.
+
+light_mode unshaded;
+
+uniform highp float swayAmount;
+uniform highp float swaySpeed;
+uniform highp float swayFrequency;
+uniform highp float twinkleAmount;
+uniform highp float twinkleSpeed;
+uniform highp float twinkleFrequency;
+
+highp float ocHash(highp vec2 p)
+{
+    return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+}
+
+void fragment()
+{
+    // Sway. sin() is 0 at integer multiples of pi, and uv.y spans exactly one
+    // period, so the left and right edges of the tile line up.
+    highp float sway = sin(UV.y * swayFrequency * 6.2831853 + TIME * swaySpeed);
+    highp vec2 uv = vec2(UV.x + sway * swayAmount, UV.y);
+
+    highp vec4 color = zTexture(uv);
+
+    // Only the visible particles twinkle; transparent texels stay transparent.
+    if (color.a > 0.001)
+    {
+        highp vec2 cell = floor(UV * twinkleFrequency);
+        highp float h = ocHash(cell);
+
+        // Stagger phase and speed per cell so the field never pulses in unison.
+        highp float phase = h * 6.2831853;
+        highp float speed = twinkleSpeed * (0.35 + 1.3 * h);
+        highp float twinkle = pow(0.5 + 0.5 * sin(TIME * speed + phase), 3.0);
+
+        color.rgb *= mix(1.0 - twinkleAmount, 1.0 + twinkleAmount, twinkle);
+    }
+
+    COLOR = color;
+}

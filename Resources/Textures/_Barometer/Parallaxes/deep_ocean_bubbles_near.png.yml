@@ -1,0 +1,16 @@
+# SPDX-License-Identifier: MIT
+
+# DeepOcean parallax layer: marine snow.
+#
+# `filter: true` is required. The particles are 1-3 px across at native
+# resolution and the layer is scaled up several times; without filtering they
+# turn into hard squares.
+#
+# `wrap: repeat` is required: the DeepOceanSnow shader sways the sample
+# horizontally, and a clamped edge would drag the outermost particle column
+# across the tile as a visible smear.
+sample:
+  filter: true
+  wrap: repeat
+
+preload: false

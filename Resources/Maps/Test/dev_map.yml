@@ -2189,6 +2189,8 @@ entities:
     - type: GridTree
     - type: Broadphase
     - type: OccluderTree
+    - type: Parallax
+      parallax: DeepOcean
   - uid: 2709
     components:
     - type: MetaData
