@@ -90,13 +90,13 @@ namespace Content.IntegrationTests.Tests
             await pair.CleanReturnAsync();
         }
 
-        private const string TestMap = "Maps/Test/dev_map.yml";
+        private const string TestMap = "Maps/_Goobstation/bagel.yml"; // Goob edit - what point is there in testing a map without any goob features??
 
         /// <summary>
         ///     Loads the default map, runs it for 5 ticks, then assert that it did not change.
         /// </summary>
         [Test]
-        public async Task LoadSaveTicksSaveDevMap()
+        public async Task LoadSaveTicksSaveBagel()
         {
             await using var pair = await PoolManager.GetServerClient();
             var server = pair.Server;
@@ -112,7 +112,7 @@ namespace Content.IntegrationTests.Tests
             var cfg = server.ResolveDependency<IConfigurationManager>();
             Assert.That(cfg.GetCVar(CCVars.GridFill), Is.False);
 
-            // Load the test map as uninitialized map, and save it to ensure it's up to date.
+            // Load bagel.yml as uninitialized map, and save it to ensure it's up to date.
             server.Post(() =>
             {
                 var path = new ResPath(TestMap);
@@ -179,11 +179,11 @@ namespace Content.IntegrationTests.Tests
         /// <remarks>
         ///     Should ensure that entities do not perform randomization prior to initialization and should prevents
         ///     bugs like the one discussed in github.com/space-wizards/RobustToolbox/issues/3870. This test is somewhat
-        ///     similar to <see cref="LoadSaveTicksSaveDevMap"/> and <see cref="SaveLoadSave"/>, but neither of these
+        ///     similar to <see cref="LoadSaveTicksSaveBagel"/> and <see cref="SaveLoadSave"/>, but neither of these
         ///     caught the mentioned bug.
         /// </remarks>
         [Test]
-        public async Task LoadTickLoadDevMap()
+        public async Task LoadTickLoadBagel()
         {
             await using var pair = await PoolManager.GetServerClient();
             var server = pair.Server;
