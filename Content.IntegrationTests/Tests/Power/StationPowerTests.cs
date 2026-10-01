@@ -22,20 +22,8 @@ public sealed class StationPowerTests
     private const float MinimumPowerDurationSeconds = 10 * 60;
 
     private static readonly string[] GameMaps =
-    [ // Goobstation only maps in rotation
-        "Atlas",
-        "Amber",
-        "Bagel",
-        "Box",
-        "Elkridge",
-        "Fland",
-        "Marathon",
-        "Oasis",
-        "Packed",
-        "Plasma",
-        "Relic",
-        "Snowball",
-        "Exo",
+    [ // Barometer: every upstream station map was removed, only the dev map is left.
+        "Dev",
     ];
 
     [Explicit]

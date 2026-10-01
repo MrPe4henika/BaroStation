@@ -26,6 +26,10 @@
       components:
         - type: StationNameSetup
           mapNameTemplate: "Dev"
+        # Barometer: Dev is the only station map left, and the evacuation
+        # shuttle test relies on the station having one.
+        - type: StationEmergencyShuttle
+          emergencyShuttlePath: /Maps/Shuttles/emergency.yml
         - type: StationJobs
           availableJobs:
             Captain: [ -1, -1 ]

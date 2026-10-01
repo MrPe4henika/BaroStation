@@ -40,6 +40,31 @@ namespace Content.IntegrationTests.Tests
             "Dart"
         };
 
+        /// <summary>
+        /// Map files that are still on disk but no longer have a <c>gameMap</c> prototype
+        /// pointing at them, because every upstream station map was removed. Loading all of
+        /// them in one test run is prohibitively slow, so they are skipped.
+        /// </summary>
+        private static readonly Regex[] RetiredStationMapRegexes = new[]
+            {
+                GlobToRegex("/Maps/_Goobstation/*.yml"),
+                GlobToRegex("/Maps/_CorvaxGoob/Stations/**/*.yml"),
+                GlobToRegex("/Maps/*.yml"),
+            }
+            .Select(glob => new Regex(glob, RegexOptions.IgnoreCase | RegexOptions.Compiled))
+            .ToArray();
+
+        private static bool IsRetiredStationMap(ResPath map)
+        {
+            foreach (var regex in RetiredStationMapRegexes)
+            {
+                if (regex.IsMatch(map.ToString()))
+                    return true;
+            }
+
+            return false;
+        }
+
         private static readonly string[] Grids =
         {
             "/Maps/centcomm.yml",
@@ -56,8 +81,6 @@ namespace Content.IntegrationTests.Tests
         /// </remarks>
         private static readonly Dictionary<string, HashSet<EntProtoId>> DoNotMapWhitelistSpecific = new()
         {
-            {"/Maps/bagel.yml", ["RubberStampMime"]},
-            {"/Maps/reach.yml", ["HandheldCrewMonitor"]},
             {"/Maps/Shuttles/ShuttleEvent/honki.yml", ["GoldenBikeHorn", "RubberStampClown"]},
             {"/Maps/Shuttles/ShuttleEvent/syndie_evacpod.yml", ["RubberStampSyndicate"]},
             {"/Maps/Shuttles/ShuttleEvent/cruiser.yml", ["ShuttleGunPerforator"]},
@@ -74,24 +97,13 @@ namespace Content.IntegrationTests.Tests
         private static readonly string[] DoNotMapWhitelist =
         {
             "/Maps/centcomm.yml",
-            "/Maps/bagel.yml", // Contains mime's rubber stamp --> Either fix this, remove the category, or remove this comment if intentional.
-            "/Maps/meta.yml", // Contains warden's rubber stamp
-            "/Maps/reach.yml", // Contains handheld crew monitor
             "/Maps/Shuttles/ShuttleEvent/cruiser.yml", // Contains LSE-1200c "Perforator"
             "/Maps/Shuttles/ShuttleEvent/honki.yml", // Contains golden honker, clown's rubber stamp
             "/Maps/Shuttles/ShuttleEvent/instigator.yml", // Contains EXP-320g "Friendship"
             "/Maps/Shuttles/ShuttleEvent/syndie_evacpod.yml", // Contains syndicate rubber stamp
             // Goobstation maps/map versions; it's kinda a big TODO rn
-            "/Maps/_Goobstation/bagel.yml",
-            "/Maps/_Goobstation/barratry.yml",
-            "/Maps/_Goobstation/cluster.yml",
-            "/Maps/_Goobstation/amber.yml",
-            "/Maps/_Goobstation/kettle.yml",
-            "/Maps/_Goobstation/lambda.yml",
-            "/Maps/_Goobstation/leonid.yml",
             "/Maps/_Goobstation/Nonstations/wizden.yml", // Obviously
             "/Maps/_Lavaland/Lavaland/ruin_toyshop.yml", // I think we might want to glob these, idk
-            "/Maps/_Goobstation/loop.yml",
             "/Maps/_Goobstation/Shuttles/consul.yml", // Contains HEINOUS amounts of centcomm contraband. Obviously.
             "/Maps/_Goobstation/Shuttles/retort_assault.yml", // ERT ships
             "/Maps/_Goobstation/Shuttles/retort_medical.yml",
@@ -109,117 +121,20 @@ namespace Content.IntegrationTests.Tests
 
         private static readonly string[] GameMaps =
         {
-            // Goobstation edit:
-            // order this list alphabetically, mark dev maps
-            // if upstreaming take ours here and edit manually.
-            //"Amber", kill
-            "Atlas",
-            "Bagel",
-            "Barratry",
-            "Box",            // Not in pool
+            // Barometer: every upstream station map has been removed, only the
+            // dev map, CentComm and the deathmatch arenas are left.
             "CentComm",       // CentComm
-            "Chloris",
-            "Cluster",
-            "Cog",
-            "Core",           // Not in pool.
-            "Delta",
             "Dev",            // Dev map
             "dm01-entryway",  // Deathmatch
-            "Europa",         // Not in pool.
-            "Exo",          // okay fine fuck it.
-            "Fland",
-            "FlandHighPop",
-            "Kettle",
-            "Lambda",         // Not in pool
             "Lavatest",       // Dev map
-            "Leonid",
-            "Loop",
-            "Marathon",
-            "Meta",
             "MeteorArena",    // Deathmatch
-            "Oasis",
-            "OasisHighPop",
-            "Omega",
-            "Origin",
-            "OriginHighPop",  // Not in pool
-            "Packed",
-            "Reach",
-            "Saltern",
-            "Serpentcrest",
-            "Snowball",
             "TestTeg",        // Dev map
-            "Train",           // Not in pool
-            // Goob end
-
-            // Corvax-Goob-Maps-start
-            "CorvaxAstra",
-            "CorvaxBox",
-            "CorvaxDelta",
-            "CorvaxGlacier",
-            "CorvaxPilgrim",
-            "CorvaxAmber",
-            "CorvaxBagel",
-            "CorvaxMarathon",
-            "CorvaxMascara",
-            "CorvaxOutpost",
-            "CorvaxPaper",
-            "CorvaxPearl",
-            "CorvaxVoid",
-            "CorvaxMaus",
-            "CorvaxOmega",
-            "CorvaxPacked",
-            "CorvaxTushkan",
-            "CorvaxAvrite",
-            "CorvaxChloris",
-            "CorvaxSilly",
-            "CorvaxCluster",
-            "CorvaxAvrite",
-            "CorvaxAwesome"
-            // Corvax-Goob-Maps-end
         };
-        // Goobstation edit start, yeah i know, but this is easier and less load than loading protoman or something.
+        // Barometer edit: only maps that can actually be rolled in the default pool.
         private static readonly string[] GameMapsInCurrentPool = // plus dev
         {
-            // order this list alphabetically, mark dev maps
-              //"Amber", kill
-              "Atlas",
-              "Bagel",
-             //  "Barratry", kill memory concerns
-            //"Box",            // Not in pool
-              "CentComm",      // CentComm
-              "Chloris",
-              "Cluster",
-              "Cog",
-            //"Core",           // Not in pool.
-              "Delta",
-              "Dev",            // Dev map
-            //"dm01-entryway",  // Deathmatch
-            //"Europa",         // Not in pool.
-              "Exo",
-            //  "Fland",        // kill due to mem
-              "FlandHighPop",
-              "Kettle",
-            //"Lambda",         // Not in pool
-              "Lavatest",       //Dev map
-              "Leonid",
-              "Loop",
-              "Marathon",
-              "Meta",
-            //"MeteorArena",    // Deathmatch
-            //  "Oasis",        // kill due to memory
-              "OasisHighPop",
-              "Omega",
-              "Origin",
-            //"OriginHighPop",  //Not in pool
-              "TestTeg",        //Dev map
-            //"Train",          //Not in pool
-              "Packed",
-              "Reach",
-              "Saltern",
-              "Serpentcrest",
-             // "Snowball", // fuck off not in pool
+            "Dev",            // Dev map
         };
-        // Goobstation edit end
 
         private static readonly ProtoId<EntityCategoryPrototype> DoNotMapCategory = "DoNotMap";
 
@@ -333,6 +248,11 @@ namespace Content.IntegrationTests.Tests
 
                 // ReSharper disable once RedundantLogicalConditionalExpressionOperand
                 if (SkipTestMaps && rootedPath.ToString().StartsWith(TestMapsPath, StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                if (IsRetiredStationMap(rootedPath))
                 {
                     continue;
                 }
@@ -684,6 +604,11 @@ namespace Content.IntegrationTests.Tests
 
                 var rootedPath = map.ToRootedPath();
                 if (SkipTestMaps && rootedPath.ToString().StartsWith(TestMapsPath, StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                if (IsRetiredStationMap(rootedPath))
                 {
                     continue;
                 }
